@@ -1,0 +1,28 @@
+# secrets
+.env
+.env.*
+!.env.example
+
+# python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# generated data
+backend/chroma_db/
+data/law/
+data-profiling/*.html
+
+# node / angular
+node_modules/
+frontend/dist/
+frontend/.angular/
+
+# editors / OS
+.vscode/
+.idea/
+.DS_Store
+
+# generated forecast reports
+backend/predictions/reports/*.pdf

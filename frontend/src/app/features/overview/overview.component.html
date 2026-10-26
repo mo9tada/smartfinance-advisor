@@ -1,0 +1,60 @@
+<div class="space-y-6">
+  <!-- Status Handling -->
+  <app-loading-spinner *ngIf="isLoading()"></app-loading-spinner>
+  <app-error-card *ngIf="error()" [message]="error()!" (retry)="loadData()"></app-error-card>
+
+  <ng-container *ngIf="!isLoading() && !error()">
+    <!-- KPI Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div *ngFor="let kpi of kpis()" class="apple-card p-8 group hover:-translate-y-1">
+        <h3 class="text-[13px] font-bold text-[#86868b] uppercase tracking-[0.05em]">{{ kpi.kpi_name }}</h3>
+        <p class="text-3xl font-bold text-[#1d1d1f] mt-3 tracking-tight">{{ kpi.value | number:'1.2-2' }}</p>
+        <div
+          class="mt-4 h-1 w-8 bg-[#e30613] rounded-full scale-x-0 group-hover:scale-x-100 transition-transform origin-left">
+        </div>
+      </div>
+    </div>
+
+    <!-- Chart Section -->
+    <div class="apple-card p-10 mt-10">
+      <div class="flex items-center justify-between mb-10">
+        <div class="space-y-1">
+          <h2 class="text-xl font-bold text-[#1d1d1f] tracking-tight">Financial Performance</h2>
+          <p class="text-[14px] text-[#86868b]">Historical Price vs Trading Volume</p>
+        </div>
+
+        <div class="flex items-center gap-4">
+          <button (click)="resetZoom()"
+            class="px-5 py-2 rounded-[10px] text-[13px] font-bold text-[#e30613] bg-[#e30613]/[0.05] hover:bg-[#e30613]/[0.1] transition-all border border-[#e30613]/10">
+            Reset Zoom
+          </button>
+
+          <!-- Frequency Filters -->
+          <div class="flex bg-black/[0.04] rounded-[14px] p-1 border border-black/[0.02]">
+            <button *ngFor="let f of ['Monthly', 'Yearly']" (click)="setFrequency(f)"
+              class="px-6 py-2 rounded-[10px] text-[13px] font-semibold transition-all"
+              [class.bg-white]="f === selectedFrequency()" [class.shadow-md]="f === selectedFrequency()"
+              [class.text-[#1d1d1f]]="f === selectedFrequency()" [class.text-[#86868b]]="f !== selectedFrequency()">
+              {{ f }}
+            </button>
+          </div>
+
+          <!-- Date Filters -->
+          <div class="flex bg-black/[0.04] rounded-[14px] p-1 border border-black/[0.02]">
+            <button *ngFor="let r of ['1Y', '3Y', '5Y', 'All']" (click)="filterData(r)"
+              class="px-6 py-2 rounded-[10px] text-[13px] font-semibold transition-all"
+              [class.bg-white]="r === selectedRange()" [class.shadow-md]="r === selectedRange()"
+              [class.text-[#1d1d1f]]="r === selectedRange()" [class.text-[#86868b]]="r !== selectedRange()">
+              {{ r }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="h-[400px]">
+        <canvas baseChart [data]="chartData" [options]="chartOptions" [type]="'line'">
+        </canvas>
+      </div>
+    </div>
+  </ng-container>
+</div>

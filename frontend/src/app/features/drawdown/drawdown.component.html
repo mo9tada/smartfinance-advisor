@@ -1,0 +1,61 @@
+<div class="space-y-6">
+    <app-loading-spinner *ngIf="isLoading()"></app-loading-spinner>
+    <app-error-card *ngIf="error()" [message]="error()!" (retry)="loadData()"></app-error-card>
+
+    <ng-container *ngIf="!isLoading() && !error()">
+        <div class="flex items-center justify-between mb-8 apple-card p-6">
+            <div class="space-y-1">
+                <h2 class="text-xl font-bold text-[#1d1d1f] tracking-tight">Drawdown Analysis</h2>
+                <p class="text-[14px] text-[#86868b]">Risk & Peak-to-Trough Recovery</p>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <button (click)="resetZoom()"
+                    class="px-5 py-2 rounded-[10px] text-[13px] font-bold text-[#e30613] bg-[#e30613]/[0.05] hover:bg-[#e30613]/[0.1] transition-all border border-[#e30613]/10">
+                    Reset Zoom
+                </button>
+
+                <!-- Frequency Filters -->
+                <div class="flex bg-black/[0.04] rounded-[14px] p-1 border border-black/[0.02]">
+                    <button *ngFor="let f of ['Monthly', 'Yearly']" (click)="setFrequency(f)"
+                        class="px-6 py-2 rounded-[10px] text-[13px] font-semibold transition-all"
+                        [class.bg-white]="f === selectedFrequency()" [class.shadow-md]="f === selectedFrequency()"
+                        [class.text-[#1d1d1f]]="f === selectedFrequency()"
+                        [class.text-[#86868b]]="f !== selectedFrequency()">
+                        {{ f }}
+                    </button>
+                </div>
+
+                <!-- Global Date Filters -->
+                <div class="flex bg-black/[0.04] rounded-[14px] p-1 border border-black/[0.02]">
+                    <button *ngFor="let r of ['1Y', '3Y', '5Y', 'All']" (click)="filterData(r)"
+                        class="px-6 py-2 rounded-[10px] text-[13px] font-semibold transition-all"
+                        [class.bg-white]="r === selectedRange()" [class.shadow-md]="r === selectedRange()"
+                        [class.text-[#1d1d1f]]="r === selectedRange()" [class.text-[#86868b]]="r !== selectedRange()">
+                        {{ r }}
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="space-y-8">
+            <!-- Peak vs Close Chart -->
+            <div class="apple-card p-10">
+                <h2 class="text-xl font-bold text-[#1d1d1f] tracking-tight mb-8">Peak vs Closing Price</h2>
+                <div class="h-[350px]">
+                    <canvas baseChart [data]="peakChartData" [options]="peakChartOptions" [type]="'line'">
+                    </canvas>
+                </div>
+            </div>
+
+            <!-- Drawdown % Chart -->
+            <div class="apple-card p-10">
+                <h2 class="text-xl font-bold text-[#ff3b30] tracking-tight mb-8">Drawdown Intensity (%)</h2>
+                <div class="h-[300px]">
+                    <canvas baseChart [data]="ddChartData" [options]="ddChartOptions" [type]="'line'">
+                    </canvas>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+</div>

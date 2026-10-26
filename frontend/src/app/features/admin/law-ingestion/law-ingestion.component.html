@@ -1,0 +1,35 @@
+<div class="p-6">
+  <div class="mb-6">
+    <h1 class="text-2xl font-bold text-black mb-2">Law Ingestion</h1>
+    <p class="text-gray-400">Loads PDF laws into the law schemas and updates Lexa's knowledge base.</p>
+  </div>
+
+  <div class="flex items-center gap-3 mb-4">
+    <button
+      type="button"
+      (click)="startIngestion()"
+      [disabled]="isIngesting"
+      class="px-4 py-2 rounded-[10px] text-[13px] font-bold transition-all border"
+      [ngClass]="{
+        'bg-[#e30613] text-white border-[#e30613] hover:bg-[#b8000f]': !isIngesting,
+        'bg-black/10 text-[#86868b] border-black/10 cursor-not-allowed': isIngesting
+      }"
+    >
+      {{ isIngesting ? 'Ingestion Running...' : 'Start Law Ingestion' }}
+    </button>
+    <p class="text-[12px] text-[#86868b]" *ngIf="ingestionExitCode !== null && !isIngesting">
+      Last exit code: {{ ingestionExitCode }}
+    </p>
+  </div>
+
+  <p *ngIf="ingestionError" class="text-[13px] text-red-600 font-medium mb-3">{{ ingestionError }}</p>
+
+  <div class="rounded-xl border border-black/10 bg-[#0b1020] p-4 h-96 overflow-auto">
+    <div *ngIf="ingestionLogs.length === 0" class="text-[12px] text-white/60 font-mono">
+      No logs yet. Click "Start Law Ingestion" to run the pipeline.
+    </div>
+    <div *ngFor="let line of ingestionLogs" class="text-[12px] text-white/85 font-mono leading-5">
+      [{{ line.timestamp }}] {{ line.message }}
+    </div>
+  </div>
+</div>

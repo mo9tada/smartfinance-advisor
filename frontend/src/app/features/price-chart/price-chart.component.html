@@ -1,0 +1,70 @@
+<div class="space-y-6">
+    <app-loading-spinner *ngIf="isLoading()"></app-loading-spinner>
+    <app-error-card *ngIf="error()" [message]="error()!" (retry)="loadData()"></app-error-card>
+
+    <ng-container *ngIf="!isLoading() && !error()">
+        <div class="apple-card p-10">
+            <div class="flex items-center justify-between mb-10">
+                <div class="space-y-1">
+                    <h2 class="text-xl font-bold text-[#1d1d1f] tracking-tight">Technical Analysis</h2>
+                </div>
+
+                <div class="flex items-center gap-6">
+                    <button (click)="resetZoom()"
+                        class="px-4 py-1.5 rounded-[10px] text-[12px] font-bold text-[#e30613] bg-[#e30613]/[0.05] hover:bg-[#e30613]/[0.1] transition-all border border-[#e30613]/10">
+                        Reset Zoom
+                    </button>
+
+                    <!-- Frequency Filters -->
+                    <div class="flex bg-black/[0.04] rounded-[14px] p-1 border border-black/[0.02]">
+                        <button *ngFor="let f of ['Monthly', 'Yearly']" (click)="setFrequency(f)"
+                            class="px-5 py-1.5 rounded-[10px] text-[12px] font-semibold transition-all"
+                            [class.bg-white]="f === selectedFrequency()" [class.shadow-md]="f === selectedFrequency()"
+                            [class.text-[#1d1d1f]]="f === selectedFrequency()"
+                            [class.text-[#86868b]]="f !== selectedFrequency()">
+                            {{ f }}
+                        </button>
+                    </div>
+
+                    <!-- Date Filters -->
+                    <div class="flex bg-black/[0.04] rounded-[14px] p-1 border border-black/[0.02]">
+                        <button *ngFor="let r of ['1Y', '3Y', '5Y', 'All']" (click)="filterData(r)"
+                            class="px-5 py-1.5 rounded-[10px] text-[12px] font-semibold transition-all"
+                            [class.bg-white]="r === selectedRange()" [class.shadow-md]="r === selectedRange()"
+                            [class.text-[#1d1d1f]]="r === selectedRange()"
+                            [class.text-[#86868b]]="r !== selectedRange()">
+                            {{ r }}
+                        </button>
+                    </div>
+
+                    <!-- Toggle Buttons -->
+                    <div class="flex gap-3 p-1 bg-black/[0.03] rounded-[14px] border border-black/[0.01]">
+                        <button (click)="toggleSeries('close', 0)" [class.bg-white]="toggles.close()"
+                            [class.shadow-sm]="toggles.close()"
+                            class="px-4 py-1.5 rounded-[10px] text-[12px] font-bold transition-all flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full" [style.background-color]="'#e30613'"></span>
+                            Close
+                        </button>
+                        <button (click)="toggleSeries('sma12', 1)" [class.bg-white]="toggles.sma12()"
+                            [class.shadow-sm]="toggles.sma12()"
+                            class="px-4 py-1.5 rounded-[10px] text-[12px] font-bold transition-all flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full" [style.background-color]="'#34c759'"></span>
+                            12-Mo
+                        </button>
+                        <button (click)="toggleSeries('sma24', 2)" [class.bg-white]="toggles.sma24()"
+                            [class.shadow-sm]="toggles.sma24()"
+                            class="px-4 py-1.5 rounded-[10px] text-[12px] font-bold transition-all flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full" [style.background-color]="'#ff9500'"></span>
+                            24-Mo
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="h-[500px]">
+                <canvas baseChart [data]="chartData" [options]="chartOptions" [type]="'line'">
+                </canvas>
+            </div>
+        </div>
+    </ng-container>
+</div>
